@@ -1,0 +1,9 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+/Valencia/smarth2o_anonymized_consumptions.csv
+/Valencia/smarth2o_anonymized_households.csv
+/meter_reads.csv
+/Tegna/smarth2o_anonymized_consumptions.csv
+/Tegna/smarth2o_anonymized_households.csv
