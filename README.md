@@ -1,95 +1,65 @@
-# Anonymized datasets of SmartH2O project   
-----
-## Overview
-This repository contains the anonymized datasets of water consumptions of __Terre di Pedemonte__ and __Valencia__ SmartH2O's users.
-Each dataset is stored in its named folder, and have the same file naming:
- 
-`anonymizer.zip`: the compressed archive of water consumptions and households features
+# IWN 2025 Hackathon
 
-Once decompressed, the archived files are `smarth2o_anonymized_households.csv` and `smarth2o_anonymized_consumptions.csv`
+This repository provides the data files and some exploratory analysis for the 2025 IWN hackathon.
 
-### smarth2o_anonymized_households.csv
-It contains the features of the households' users.
-Here's an extract :
+This repository is forked from the [SmartH2O data](https://github.com/The-SmartH2O-project/datasets) and enhanced with some scripting to clean and explore the data.
 
-| index | smart_meter_id | household_size | household_garden_area | household_pool_volume | household_pool | household_garden | residency_type | number_bathrooms | environmental_attitude           | irrigation_system | house_plants | balcony_plants | building_size | name            | efficiency | ecomode | timer | name.1                 | number |
-|-------|----------------|----------------|-----------------------|-----------------------|----------------|------------------|----------------|------------------|----------------------------------|-------------------|--------------|----------------|---------------|-----------------|------------|---------|-------|------------------------|--------|
-| 0     | 111            | 85,00          | 0,00                  | 0,00                  | 0              | 0                | Flat           | 2                | Medium environmental sensitivity | 0                 | 0            | 0              | \N            | washing_machine | A++        | 1       | 1     | toilet                 | 2      |
-| 1     | 111            | 85,00          | 0,00                  | 0,00                  | 0              | 0                | Flat           | 2                | Medium environmental sensitivity | 0                 | 0            | 0              | \N            | washing_machine | A++        | 1       | 1     | sink                   | 3      |
-| 2     | 111            | 85,00          | 0,00                  | 0,00                  | 0              | 0                | Flat           | 2                | Medium environmental sensitivity | 0                 | 0            | 0              | \N            | washing_machine | A++        | 1       | 1     | bathtub                | 0      |
-| 3     | 111            | 85,00          | 0,00                  | 0,00                  | 0              | 0                | Flat           | 2                | Medium environmental sensitivity | 0                 | 0            | 0              | \N            | washing_machine | A++        | 1       | 1     | shower                 | 0      |
-| 4     | 111            | 85,00          | 0,00                  | 0,00                  | 0              | 0                | Flat           | 2                | Medium environmental sensitivity | 0                 | 0            | 0              | \N            | washing_machine | A++        | 1       | 1     | tub_shower             | 2      |
-| 5     | 111            | 85,00          | 0,00                  | 0,00                  | 0              | 0                | Flat           | 2                | Medium environmental sensitivity | 0                 | 0            | 0              | \N            | washing_machine | A++        | 1       | 1     | dishwasher_simple      | 1      |
-| 6     | 111            | 85,00          | 0,00                  | 0,00                  | 0              | 0                | Flat           | 2                | Medium environmental sensitivity | 0                 | 0            | 0              | \N            | washing_machine | A++        | 1       | 1     | washing_machine_simple | 1      |
-| 7     | 111            | 85,00          | 0,00                  | 0,00                  | 0              | 0                | Flat           | 2                | Medium environmental sensitivity | 0                 | 0            | 0              | \N            | dishwasher      | A++        | 1       | 1     | toilet                 | 2      |
-| 8     | 111            | 85,00          | 0,00                  | 0,00                  | 0              | 0                | Flat           | 2                | Medium environmental sensitivity | 0                 | 0            | 0              | \N            | dishwasher      | A++        | 1       | 1     | sink                   | 3      |
-| 9     | 111            | 85,00          | 0,00                  | 0,00                  | 0              | 0                | Flat           | 2                | Medium environmental sensitivity | 0                 | 0            | 0              | \N            | dishwasher      | A++        | 1       | 1     | bathtub                | 0      |
-| 10    | 111            | 85,00          | 0,00                  | 0,00                  | 0              | 0                | Flat           | 2                | Medium environmental sensitivity | 0                 | 0            | 0              | \N            | dishwasher      | A++        | 1       | 1     | shower                 | 0      |
-| 11    | 111            | 85,00          | 0,00                  | 0,00                  | 0              | 0                | Flat           | 2                | Medium environmental sensitivity | 0                 | 0            | 0              | \N            | dishwasher      | A++        | 1       | 1     | tub_shower             | 2      |
-| 12    | 111            | 85,00          | 0,00                  | 0,00                  | 0              | 0                | Flat           | 2                | Medium environmental sensitivity | 0                 | 0            | 0              | \N            | dishwasher      | A++        | 1       | 1     | dishwasher_simple      | 1      |
-| 13    | 111            | 85,00          | 0,00                  | 0,00                  | 0              | 0                | Flat           | 2                | Medium environmental sensitivity | 0                 | 0            | 0              | \N            | dishwasher      | A++        | 1       | 1     | washing_machine_simple | 1      |
+## Files
+- `clean_data`: Cleaned data sets suitable for analysis (not on GitHub)
+- `Tegna`: Raw data for the Swiss town of [Terre di Pedemonte](https://en.wikipedia.org/wiki/Terre_di_Pedemonte).
+- `Valencia`: Raw data for the Spanish city of [Valencia](https://en.wikipedia.org/wiki/Valencia).
+- `etl.R`: Script for cleaning the raw data
+- `README.md`: This file
+- `shiny-application.r`: Interactive application to explore the data. 
 
-The columns meaning is:
+## Raw Data
+The SmartH2O project provides anonymised digital metering datasets from the towns of Tegna and Valencia in Switserland and Spain.
 
-1. `index` The number of the row in the csv file
-1. `smart_meter_id` The smart meter's ID
-1. `household_size` The size of the Household (in squared meters)
-1. `household_garden_area` The size of the garden (in squared meters)
-1. `household_pool_volume` The volume of the pool (in cubic meters)
-1. `household_pool` The presence of the pool (boolean)
-1. `household_garden` The presence of the garden (boolean)
-1. `residency_type` The type of residency (Flat, House, Single Family, ...) 
-1. `number_bathrooms` The number of bathrooms
-1. `environmental_attitude` The environmental attitude sensitivity of the user (High, Medium, Low)
-1. `irrigation_system` The presence of an irrigation system (boolean)
-1. `house_plants` The presence of house plants (boolean)
-1. `balcony_plants` The presence of balcony plants (boolean)
-1. `building_size` The size of the building (in squared meters)
-1. `name` The name of a complex device (washing mascine, dishwater, ...)
-1. `efficiency` The nefficiency of the complex device ( A, A+. A++, ...)
-1. `ecomode` The presence of the Eco-Mode feature in the complex device (boolean)
-1. `timer` The presence of the timer in the complex device (boolean)
-1. `name.1` The name of a simple device (toilet, sink, bathtub, ...)
-1. `number` The number of the simple device 
+Each dataset is stored in its named folder and has the same file: `anonymizer.zip`. Once decompressed, the archived files are `smarth2o_anonymized_households.csv` and `smarth2o_anonymized_consumptions.csv`
 
-For all columns, a `NULL` value means that the user doesn't provided the information.
-### smarth2o_anonymized_consumptions.csv
-It contains the periodic readings of the smart meters.
-Here's an extract :
+## Extract, Transfer and Load (ETL)
+The raw data is extracted and transferred with the `etl.R` script to create [tidy data](https://r4ds.had.co.nz/tidy-data.html). The data is stored in three files:
 
-| index | smart_meter_id | tst                 | meter_reading |
-|-------|----------------|---------------------|---------------|
-| 17    | 210            | 2015-05-20 09:15:00 | 178,297       |
-| 18    | 210            | 2015-05-21 09:15:00 | 178,372       |
-| 19    | 210            | 2015-05-22 09:15:00 | 178,622       |
-| 20    | 210            | 2015-05-23 09:15:00 | 178,705       |
-| 21    | 210            | 2015-05-24 09:15:00 | 178,826       |
-| 22    | 210            | 2015-05-25 09:15:00 | 179,108       |
-| 23    | 210            | 2015-05-26 09:15:00 | 179,108       |
-| 24    | 210            | 2015-05-27 09:15:00 | 179,117       |
-| 25    | 210            | 2015-05-28 09:15:00 | 179,324       |
-| 26    | 210            | 2015-05-29 09:15:00 | 179,562       |
-| 27    | 210            | 2015-05-30 09:15:00 | 179,579       |
+### `tegna_valencia_meter_reads.csv`
 
-The columns meaning is:
+- `smart_meter_id`: The smart meter's unique ID. Starts with either T (Tegna) or V (Valencia), followed by a three-digit number.
+- `timestamp`: Timestamp in local time.
+- `meter_reading`: Cumulative meter read in litres.
+- `town`: name of the town (Tegna or Valencia).
 
-1. `index`  The number of the row in the csv file
-1. `smart_meter_id` The smart meter's ID
-1. `tst` The timestamp of the reading
-1. `meter_reading` The value read
+Note that this data shows regular anomalies, such as negative flows.
 
-The difference of the reading values between two consecutive rows gives the water __consumption__.
+The meta data is provided in two separate files:
 
-## Security
-In order to certificate the autenticity of the datasets, we provide these additional files:
+### `tegna_valencia_houshold_meta_data.csv`
 
-- `anonymizer.zip.asc`: the `anonymizer.zip` signature made by the SmartH2O [OpenPGP](http://openpgp.org/) key
-- `sha256sum.txt`: the _sha256 hash_ generated for `anonymizer.zip`
-- `sha256sum.txt.asc`: the `sha256sum.txt` signature made by the SmartH2O [OpenPGP](http://openpgp.org/) key 
+- `smart_meter_id`: The smart meter's unique ID. Starts with either T (Tegna) or V (Valencia), followed by a three-digit number.
+- `household_size`: The size of the Household (in square meters)
+- `household_garden_area` The size of the garden (in square meters)
+- `household_pool_volume` The volume of the pool (in cubic meters)
+- `household_pool` The presence of the pool (boolean)
+- `household_garden` The presence of the garden (boolean)
+- `residency_type` The type of residency (Flat, House, Single Family, ...)
+- `number_bathrooms` The number of bathrooms
+- `environmental_attitude` The environmental attitude sensitivity of the user 
+- `irrigation_system` The presence of an irrigation system (boolean)
+- `house_plants` The presence of house plants (boolean)
+- `balcony_plants` The presence of balcony plants (boolean)
+- `building_size` The size of the building (in square meters)
+- `appliance` The name of a complex device (washing machine, dishwasher, ...)
+- `efficiency` The efficiency of the complex device ( A, A+, A++, ...)
+- `ecomode` The presence of the Eco-Mode feature in the complex device (boolean)
+- `timer` The presence of the timer in the complex device (boolean)
 
+### `tegna_valencia_appliances.csv`
 
-The SmartH2O key, [available here](https://pgp.mit.edu/pks/lookup?op=vindex&search=0x9739174C8B57ACA9), has this fingerprint: `7F14 4F03 BCB9 9A3C D99D 7483 9739 174C 8B57 ACA9`
+- `smart_meter_id`: The smart meter's unique ID.
+- `appliance`: Type of appliance.
+- `number`: Number of appliances in the household.
 
-## Contacts
-For any type of further questions write to `smarth2o@idsia.ch`. 
-The maintainer of this dataset is Corrado Valeri (`corrado.valeri@supsi.ch`).
+Note that the meta data is incomplete as not all trial participants provided the required information.
+
+# Shiny Application
+A [Shiny Application](https://shiny.posit.co/) provides basic exploratory analysis of the meter reads and provides the basic metadata.
+
+The application is hosted on [ShinyApps.io](https://prevos.shinyapps.io/iwn-hackathon-2025/).
