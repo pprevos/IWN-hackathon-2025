@@ -6,34 +6,34 @@ This repository is forked from the [SmartH2O data](https://github.com/The-SmartH
 
 ## Files
 - `clean_data`: Cleaned data sets suitable for analysis (not on GitHub)
-- `Tegna`: Raw data for the Swiss town of [Terre di Pedemonte](https://en.wikipedia.org/wiki/Terre_di_Pedemonte).
+- `Terre di Pedemonte`: Raw data for the Swiss town of [Terre di Pedemonte](https://en.wikipedia.org/wiki/Terre_di_Pedemonte).
 - `Valencia`: Raw data for the Spanish city of [Valencia](https://en.wikipedia.org/wiki/Valencia).
 - `etl.R`: Script for cleaning the raw data
 - `README.md`: This file
 - `shiny-application.r`: Interactive application to explore the data. 
 
 ## Raw Data
-The SmartH2O project provides anonymised digital metering datasets from the towns of Tegna and Valencia in Switserland and Spain.
+The SmartH2O project provides anonymised digital metering datasets from the towns of Terre Di Pedemonte and Valencia in Switserland and Spain.
 
 Each dataset is stored in its named folder and has the same file: `anonymizer.zip`. Once decompressed, the archived files are `smarth2o_anonymized_households.csv` and `smarth2o_anonymized_consumptions.csv`
 
 ## Extract, Transfer and Load (ETL)
 The raw data is extracted and transferred with the `etl.R` script to create [tidy data](https://r4ds.had.co.nz/tidy-data.html). The data is stored in three files:
 
-### `tegna_valencia_meter_reads.csv`
+### `meter_reads.csv`
 
-- `smart_meter_id`: The smart meter's unique ID. Starts with either T (Tegna) or V (Valencia), followed by a three-digit number.
+- `smart_meter_id`: The smart meter's unique ID. Starts with either T (Terre Di Pedemonte) or V (Valencia), followed by a three-digit number.
 - `timestamp`: Timestamp in local time.
 - `meter_reading`: Cumulative meter read in litres.
-- `town`: name of the town (Tegna or Valencia).
+- `town`: name of the town (Terre Di Pedemonte or Valencia).
 
 Note that this data shows regular anomalies, such as negative flows.
 
 The meta data is provided in two separate files:
 
-### `tegna_valencia_houshold_meta_data.csv`
+### `houshold_meta_data.csv`
 
-- `smart_meter_id`: The smart meter's unique ID. Starts with either T (Tegna) or V (Valencia), followed by a three-digit number.
+- `smart_meter_id`: The smart meter's unique ID. Starts with either T (Terre Di Pedemonte) or V (Valencia), followed by a three-digit number.
 - `household_size`: The size of the Household (in square meters)
 - `household_garden_area` The size of the garden (in square meters)
 - `household_pool_volume` The volume of the pool (in cubic meters)
@@ -51,7 +51,7 @@ The meta data is provided in two separate files:
 - `ecomode` The presence of the Eco-Mode feature in the complex device (boolean)
 - `timer` The presence of the timer in the complex device (boolean)
 
-### `tegna_valencia_appliances.csv`
+### `appliances.csv`
 
 - `smart_meter_id`: The smart meter's unique ID.
 - `appliance`: Type of appliance.
