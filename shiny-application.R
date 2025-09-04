@@ -4,10 +4,10 @@ library(readr)
 library(dplyr)
 library(shiny)
 library(ggplot2)
-library(DT)
 
 meter_reads <- read_csv("clean_data/meter_reads.csv")
 households  <- read_csv("clean_data/houshold_meta_data.csv")
+appliances <- read_csv("clean_data/appliances.csv")
 
 ui <- fluidPage(
   titlePanel("IWN Hackathon 2025"),
@@ -19,15 +19,9 @@ ui <- fluidPage(
       selectInput(
         "town", "Town",
         multiple = TRUE,
-        selected = c("Tegna", "Valencia"),
-        choices = sort(unique(meter_reads$town))
+        selected = sort(unique(meter_reads$town)),
+        choices  = sort(unique(meter_reads$town))
       ),
-      checkboxInput(
-        "only_hh",
-        "Only show meters with household metadata",
-        value = FALSE
-      ),
-      # --- New: time filter ---
       dateRangeInput(
         "date_range", "Date range",
         start = min(as.Date(meter_reads$timestamp)),
@@ -37,16 +31,24 @@ ui <- fluidPage(
         startview = "month"
       ),
       uiOutput("meter_select"),
+      checkboxInput(
+        "only_hh",
+        "Only show meters with household metadata",
+        value = FALSE
+      ),
+      actionButton("pick4", "🎲 Pick six random meters"),
+      p(),
       p("Data and code available on ",
         a("GitHub",
           href = "https://github.com/pprevos/IWN-hackathon-2025",
           target = "_blank"))
-    ), # sidebarpanel
+    ),
     mainPanel(
       tabsetPanel(
-        tabPanel("Meter reads", plotOutput("linePlot")),
-        tabPanel("Flows", plotOutput("flowPlot")),
-        tabPanel("Household Info", DTOutput("householdTable"))
+        tabPanel("Meter reads", plotOutput("linePlot", height = "70vh")),
+        tabPanel("Flows",       plotOutput("flowPlot",  height = "70vh")),
+        tabPanel("Household Info", tableOutput("householdTable")),
+        tabPanel("Appliances", tableOutput("appliancesTable"))
       )
     )
   )
@@ -54,29 +56,40 @@ ui <- fluidPage(
 
 server <- function(input, output, session) {
   
-  # Meter choices update whenever towns change; optional household filter
-  output$meter_select <- renderUI({
+  # Centralised definition of currently available meters (Town + Only HH)
+  meters_available <- reactive({
     req(input$town)
-    
-    meters <- meter_reads %>%
+    meter_reads %>%
       filter(town %in% input$town) %>%
-      {
-        if (isTRUE(input$only_hh)) {
-          filter(., smart_meter_id %in% unique(households$smart_meter_id))
-        } else .
+      { if (isTRUE(input$only_hh)) {
+        filter(., smart_meter_id %in% unique(households$smart_meter_id))
+      } else .
       } %>%
       distinct(smart_meter_id) %>%
       pull(smart_meter_id) %>%
       sort()
-    
-    default_sel <- head(meters, 4)
-    
+  })
+  
+  # Meter select UI, with safe default selection
+  output$meter_select <- renderUI({
+    meters <- meters_available()
+    default_sel <- meters[seq_len(min(6, length(meters)))]
     selectInput(
       "meter", "Select Smart Meter ID",
       choices  = meters,
       selected = default_sel,
       multiple = TRUE
     )
+  })
+  
+  # Button to pick random meters from the current set
+  observeEvent(input$pick4, {
+    meters <- meters_available()
+    req(length(meters) > 0)
+    n <- min(6, length(meters))
+    updateSelectInput(session, "meter", selected = sample(meters, n))
+    showNotification(sprintf("Selected %d random meter(s).", n),
+                     type = "message", duration = 2)
   })
   
   # Base data (reads) for selected meters + date filter
@@ -94,15 +107,10 @@ server <- function(input, output, session) {
   output$linePlot <- renderPlot({
     df <- plot_data()
     req(nrow(df) > 0)
-    
     ggplot(df, aes(x = timestamp, y = meter_reading)) +
       geom_line() +
-      facet_wrap(~ smart_meter_id, scales = "free_y") +
-      labs(
-        title = "Meter Reads",
-        x = "Timestamp",
-        y = "Reading"
-      ) +
+      facet_wrap(~ smart_meter_id, scales = "free_y", ncol = 2) +
+      labs(title = "Meter Reads", x = "Timestamp", y = "Reading") +
       theme_minimal(base_size = 18)
   })
   
@@ -125,33 +133,40 @@ server <- function(input, output, session) {
   output$flowPlot <- renderPlot({
     df <- flow_data()
     req(nrow(df) > 0)
-    
     ggplot(df, aes(x = timestamp, y = flow)) +
       geom_line(na.rm = TRUE) +
-      facet_wrap(~ smart_meter_id, scales = "free_y") +
-      labs(
-        title = "Flow (units per hour)",
-        x = "Timestamp",
-        y = "Flow (units/hour)"
-      ) +
+      facet_wrap(~ smart_meter_id, scales = "free_y", ncol = 2) +
+      labs(title = "Flow (units per hour)", x = "Timestamp", y = "Flow (units/hour)") +
       theme_minimal(base_size = 18)
   })
   
-  # Household table (transposed) — filtered to selected meters; time filter not applied
+  # Household table (transposed) — filtered to selected meters
   household_data <- reactive({
     req(input$meter)
-    hh <- households %>%
+    hh <- households %>% 
       filter(smart_meter_id %in% input$meter)
-    
     df <- as.data.frame(t(hh))
-    colnames(df) <- paste("Household", seq_len(ncol(df)))
-    tibble::rownames_to_column(df, "Attribute")
+    colnames(df) <- df[1, ]
+    df <- tibble::rownames_to_column(df, "Attribute")
+    df[-1, ]
   })
   
-  output$householdTable <- renderDT({
-    datatable(household_data(),
-              options = list(pageLength = 20, scrollX = TRUE))
+  output$householdTable <- renderTable(
+    household_data(), 
+    striped = TRUE)
+  
+  # Appliances
+  appliance_data <- reactive({
+    req(input$meter)
+    app <- appliances %>% 
+      filter(smart_meter_id %in% input$meter)
+    pivot_wider(app, names_from = smart_meter_id, values_from = number,
+                values_fn = sum)
   })
+  
+  output$appliancesTable <- renderTable(
+    appliance_data(), 
+    striped = TRUE)
 }
 
 shinyApp(ui, server)
